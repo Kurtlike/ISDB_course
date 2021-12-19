@@ -1,37 +1,27 @@
 package com.jokend.db.db.pojoDBClasses;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
+import javax.persistence.*;
 
+@ToString
+@Table(name = "movings")
+@Entity
+@IdClass(MovingsKey.class)
 public class Movings {
-
+  @Id
+  @Getter
+  @Setter
   private long publicTransport;
+
+  @Id
+  @Getter
+  @Setter
   private long inn;
+
+  @Id
+  @Getter
+  @Setter
   private java.sql.Timestamp date;
-
-
-  public long getPublicTransport() {
-    return publicTransport;
-  }
-
-  public void setPublicTransport(long publicTransport) {
-    this.publicTransport = publicTransport;
-  }
-
-
-  public long getInn() {
-    return inn;
-  }
-
-  public void setInn(long inn) {
-    this.inn = inn;
-  }
-
-
-  public java.sql.Timestamp getDate() {
-    return date;
-  }
-
-  public void setDate(java.sql.Timestamp date) {
-    this.date = date;
-  }
-
 }

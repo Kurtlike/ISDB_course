@@ -1,37 +1,24 @@
 package com.jokend.db.db.pojoDBClasses;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
+import javax.persistence.*;
 
+@ToString
+@Table(name = "remedies")
+@Entity
 public class Remedies {
-
+  @Id
+  @Getter
+  @Setter
   private String name;
+
+  @Getter
+  @Setter
   private long efficiency;
+
+  @Getter
+  @Setter
   private long comfortable;
-
-
-  public String getName() {
-    return name;
-  }
-
-  public void setName(String name) {
-    this.name = name;
-  }
-
-
-  public long getEfficiency() {
-    return efficiency;
-  }
-
-  public void setEfficiency(long efficiency) {
-    this.efficiency = efficiency;
-  }
-
-
-  public long getComfortable() {
-    return comfortable;
-  }
-
-  public void setComfortable(long comfortable) {
-    this.comfortable = comfortable;
-  }
-
 }

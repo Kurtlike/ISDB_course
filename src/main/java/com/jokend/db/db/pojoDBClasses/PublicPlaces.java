@@ -1,97 +1,50 @@
 package com.jokend.db.db.pojoDBClasses;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
+import javax.persistence.*;
+
+@ToString
+@Table(name = "public_places")
+@Entity
 public class PublicPlaces {
-
+  @Id
+  @Getter
+  @Setter
   private long id;
+
+  @Getter
+  @Setter
   private String pClass;
+
+  @Getter
+  @Setter
   private String district;
+
+  @Getter
+  @Setter
   private String isWorking;
+
+  @Getter
+  @Setter
   private long capacity;
+
+  @Getter
+  @Setter
   private long area;
+
+  @Getter
+  @Setter
   private long avrTimeVisitor;
+
+  @Getter
+  @Setter
   private long avrTimeStaff;
+
+  @Getter
+  @Setter
   private long restrictionsLevel;
-
-
-  public long getId() {
-    return id;
-  }
-
-  public void setId(long id) {
-    this.id = id;
-  }
-
-
-  public String getpClass() {
-    return pClass;
-  }
-
-  public void setClass(String pClass) {
-    this.pClass = pClass;
-  }
-
-
-  public String getDistrict() {
-    return district;
-  }
-
-  public void setDistrict(String district) {
-    this.district = district;
-  }
-
-
-  public String getIsWorking() {
-    return isWorking;
-  }
-
-  public void setIsWorking(String isWorking) {
-    this.isWorking = isWorking;
-  }
-
-
-  public long getCapacity() {
-    return capacity;
-  }
-
-  public void setCapacity(long capacity) {
-    this.capacity = capacity;
-  }
-
-
-  public long getArea() {
-    return area;
-  }
-
-  public void setArea(long area) {
-    this.area = area;
-  }
-
-
-  public long getAvrTimeVisitor() {
-    return avrTimeVisitor;
-  }
-
-  public void setAvrTimeVisitor(long avrTimeVisitor) {
-    this.avrTimeVisitor = avrTimeVisitor;
-  }
-
-
-  public long getAvrTimeStaff() {
-    return avrTimeStaff;
-  }
-
-  public void setAvrTimeStaff(long avrTimeStaff) {
-    this.avrTimeStaff = avrTimeStaff;
-  }
-
-
-  public long getRestrictionsLevel() {
-    return restrictionsLevel;
-  }
-
-  public void setRestrictionsLevel(long restrictionsLevel) {
-    this.restrictionsLevel = restrictionsLevel;
-  }
 
 }

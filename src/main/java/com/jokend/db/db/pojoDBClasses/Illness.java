@@ -1,76 +1,40 @@
 package com.jokend.db.db.pojoDBClasses;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
+import javax.persistence.*;
+
+@ToString
+@Table(name = "illness")
+@Entity
 public class Illness {
-
+  @Id
+  @Getter
+  @Setter
   private long id;
+
+  @Getter
+  @Setter
   private java.sql.Timestamp dateOfInfection;
+
+  @Getter
+  @Setter
   private long virusId;
+
+  @Getter
+  @Setter
   private long innInjured;
+
+  @Getter
+  @Setter
   private long innCarrier;
+
+  @Getter
+  @Setter
   private long placeTransmission;
+
+  @Getter
+  @Setter
   private String status;
-
-
-  public long getId() {
-    return id;
-  }
-
-  public void setId(long id) {
-    this.id = id;
-  }
-
-
-  public java.sql.Timestamp getDateOfInfection() {
-    return dateOfInfection;
-  }
-
-  public void setDateOfInfection(java.sql.Timestamp dateOfInfection) {
-    this.dateOfInfection = dateOfInfection;
-  }
-
-
-  public long getVirusId() {
-    return virusId;
-  }
-
-  public void setVirusId(long virusId) {
-    this.virusId = virusId;
-  }
-
-
-  public long getInnInjured() {
-    return innInjured;
-  }
-
-  public void setInnInjured(long innInjured) {
-    this.innInjured = innInjured;
-  }
-
-
-  public long getInnCarrier() {
-    return innCarrier;
-  }
-
-  public void setInnCarrier(long innCarrier) {
-    this.innCarrier = innCarrier;
-  }
-
-
-  public long getPlaceTransmission() {
-    return placeTransmission;
-  }
-
-  public void setPlaceTransmission(long placeTransmission) {
-    this.placeTransmission = placeTransmission;
-  }
-
-
-  public String getStatus() {
-    return status;
-  }
-
-  public void setStatus(String status) {
-    this.status = status;
-  }
-
 }

@@ -1,47 +1,30 @@
 package com.jokend.db.db.pojoDBClasses;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
+import javax.persistence.*;
 
+@ToString
+@Table(name = "staff")
+@Entity
+@IdClass(StaffKey.class)
 public class Staff {
-
+  @Id
+  @Getter
+  @Setter
   private long inn;
+
+  @Id
+  @Getter
+  @Setter
   private long placeId;
+
+  @Getter
+  @Setter
   private java.sql.Time startTime;
+
+  @Getter
+  @Setter
   private java.sql.Time endTime;
-
-
-  public long getInn() {
-    return inn;
-  }
-
-  public void setInn(long inn) {
-    this.inn = inn;
-  }
-
-
-  public long getPlaceId() {
-    return placeId;
-  }
-
-  public void setPlaceId(long placeId) {
-    this.placeId = placeId;
-  }
-
-
-  public java.sql.Time getStartTime() {
-    return startTime;
-  }
-
-  public void setStartTime(java.sql.Time startTime) {
-    this.startTime = startTime;
-  }
-
-
-  public java.sql.Time getEndTime() {
-    return endTime;
-  }
-
-  public void setEndTime(java.sql.Time endTime) {
-    this.endTime = endTime;
-  }
-
 }

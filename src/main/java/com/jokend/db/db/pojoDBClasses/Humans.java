@@ -1,57 +1,32 @@
 package com.jokend.db.db.pojoDBClasses;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
+import javax.persistence.*;
+
+@ToString
+@Table(name = "humans")
+@Entity
 public class Humans {
-
+  @Id
+  @Getter
+  @Setter
   private long inn;
+
+  @Getter
+  @Setter
   private String status;
+  @Getter
+  @Setter
   private java.sql.Timestamp birthday;
+
+  @Getter
+  @Setter
   private String district;
+
+  @Getter
+  @Setter
   private String remedy;
-
-
-  public long getInn() {
-    return inn;
-  }
-
-  public void setInn(long inn) {
-    this.inn = inn;
-  }
-
-
-  public String getStatus() {
-    return status;
-  }
-
-  public void setStatus(String status) {
-    this.status = status;
-  }
-
-
-  public java.sql.Timestamp getBirthday() {
-    return birthday;
-  }
-
-  public void setBirthday(java.sql.Timestamp birthday) {
-    this.birthday = birthday;
-  }
-
-
-  public String getDistrict() {
-    return district;
-  }
-
-  public void setDistrict(String district) {
-    this.district = district;
-  }
-
-
-  public String getRemedy() {
-    return remedy;
-  }
-
-  public void setRemedy(String remedy) {
-    this.remedy = remedy;
-  }
-
 }
