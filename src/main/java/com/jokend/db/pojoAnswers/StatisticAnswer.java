@@ -1,47 +1,26 @@
 package com.jokend.db.pojoAnswers;
 
+import lombok.Getter;
+import lombok.Setter;
+
 public class StatisticAnswer {
-    public StatisticAnswer(int vaccinated, int regular, int infected, int died) {
+    public StatisticAnswer(long vaccinated, long regular, long infected, long died) {
         this.vaccinated = vaccinated;
         this.regular = regular;
         this.infected = infected;
         this.died = died;
     }
+    @Getter
+    @Setter
+    private long vaccinated;
+    @Getter
+    @Setter
+    private long regular;
+    @Getter
+    @Setter
+    private long infected;
+    @Getter
+    @Setter
+    private long died;
 
-    private int vaccinated;
-    private int regular;
-    private int infected;
-    private int died;
-
-    public int getVaccinated() {
-        return vaccinated;
-    }
-
-    public void setVaccinated(int vaccinated) {
-        this.vaccinated = vaccinated;
-    }
-
-    public int getRegular() {
-        return regular;
-    }
-
-    public void setRegular(int regular) {
-        this.regular = regular;
-    }
-
-    public int getInfected() {
-        return infected;
-    }
-
-    public void setInfected(int infected) {
-        this.infected = infected;
-    }
-
-    public int getDied() {
-        return died;
-    }
-
-    public void setDied(int died) {
-        this.died = died;
-    }
 }

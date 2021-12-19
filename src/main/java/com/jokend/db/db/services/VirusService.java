@@ -1,4 +1,4 @@
-package com.jokend.db.db.Services;
+package com.jokend.db.db.services;
 
 import com.jokend.db.db.pojoDBClasses.Virus;
 import javax.transaction.Transactional;

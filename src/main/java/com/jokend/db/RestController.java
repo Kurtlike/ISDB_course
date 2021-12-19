@@ -1,13 +1,17 @@
 package com.jokend.db;
 
+import com.jokend.db.db.serviceImpls.HumansServiceImpls;
 import com.jokend.db.pojoAnswers.DistrictsAnswer;
 import com.jokend.db.pojoAnswers.StatisticAnswer;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 @CrossOrigin
 @org.springframework.web.bind.annotation.RestController
 public class RestController {
+    @Autowired
+    private HumansServiceImpls humansService;
     int tic = 6;
     @GetMapping(value = "/getViruses")
     public ArrayList<String> getViruses(){
@@ -39,7 +43,7 @@ public class RestController {
     @GetMapping(value = "/getHumanStatistic")
     public StatisticAnswer getHumanStatistic(){
         tic+=3;
-        return new StatisticAnswer(2*tic,5000-tic,tic*2,tic );
+        return new StatisticAnswer(2L *tic,humansService.getRegularPeople(),tic* 2L, humansService.getDiedHuman());
     }
     @GetMapping(value = "/getMapStatistic")
     public ArrayList<DistrictsAnswer> getMapStatistic(){

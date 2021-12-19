@@ -1,4 +1,4 @@
-package com.jokend.db.db.Services;
+package com.jokend.db.db.services;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;

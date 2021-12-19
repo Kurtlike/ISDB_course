@@ -1,4 +1,4 @@
-package com.jokend.db.db.Repos;
+package com.jokend.db.db.repos;
 
 import com.jokend.db.db.pojoDBClasses.District;
 import org.springframework.data.jpa.repository.JpaRepository;

@@ -1,7 +1,6 @@
-package com.jokend.db.db.Services;
+package com.jokend.db.db.services;
 
 import com.jokend.db.db.pojoDBClasses.Movings;
-import com.jokend.db.db.pojoDBClasses.PublicTransport;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;
