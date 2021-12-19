@@ -12,7 +12,7 @@ import javax.transaction.Transactional;
 @Service
 @Transactional
 @Repository
-public class HumansServiceImpls implements HumansService {
+public class HumansServiceImpl implements HumansService {
     @Autowired
     private HumansRepo humansRepo;
     @Override

@@ -1,6 +1,6 @@
 package com.jokend.db;
 
-import com.jokend.db.db.serviceImpls.HumansServiceImpls;
+import com.jokend.db.db.serviceImpls.HumansServiceImpl;
 import com.jokend.db.pojoAnswers.DistrictsAnswer;
 import com.jokend.db.pojoAnswers.StatisticAnswer;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +11,7 @@ import java.util.ArrayList;
 @org.springframework.web.bind.annotation.RestController
 public class RestController {
     @Autowired
-    private HumansServiceImpls humansService;
+    private HumansServiceImpl humansService;
     int tic = 6;
     @GetMapping(value = "/getViruses")
     public ArrayList<String> getViruses(){
