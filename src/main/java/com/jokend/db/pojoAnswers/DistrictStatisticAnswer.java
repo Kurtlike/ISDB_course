@@ -1,7 +1,7 @@
 package com.jokend.db.pojoAnswers;
 
-public class DistrictsAnswer {
-    public DistrictsAnswer(String name, int vaccinated, int regular, int infected, int died) {
+public class DistrictStatisticAnswer {
+    public DistrictStatisticAnswer(String name, int vaccinated, int regular, int infected, int died) {
         this.name = name;
         this.vaccinated = vaccinated;
         this.regular = regular;

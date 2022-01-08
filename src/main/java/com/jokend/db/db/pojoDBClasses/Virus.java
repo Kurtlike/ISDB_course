@@ -12,17 +12,21 @@ public class Virus {
   @Id
   @Getter
   @Setter
-  private long virusId;
+  private Integer virusId;
 
   @Getter
   @Setter
-  private long mortality;
+  private Integer mortality;
 
   @Getter
   @Setter
-  private long incubationPeriod;
+  private Integer incubationPeriod;
 
   @Getter
   @Setter
-  private long asymptomaticProb;
+  private Integer asymptomaticProb;
+
+  @Getter
+  @Setter
+  private Integer infectiousness;
 }

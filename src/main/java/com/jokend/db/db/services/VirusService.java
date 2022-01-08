@@ -1,6 +1,8 @@
 package com.jokend.db.db.services;
 
 import com.jokend.db.db.pojoDBClasses.Virus;
+import com.jokend.db.pojoAnswers.VirusAnswer;
+
 import javax.transaction.Transactional;
 
 public interface VirusService {

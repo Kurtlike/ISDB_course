@@ -1,8 +1,11 @@
 package com.jokend.db;
 
+import com.jokend.db.db.pojoDBClasses.Virus;
 import com.jokend.db.db.serviceImpls.HumansServiceImpl;
-import com.jokend.db.pojoAnswers.DistrictsAnswer;
+import com.jokend.db.db.serviceImpls.VirusServiceImpl;
+import com.jokend.db.pojoAnswers.DistrictStatisticAnswer;
 import com.jokend.db.pojoAnswers.StatisticAnswer;
+import com.jokend.db.pojoAnswers.VirusAnswer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,6 +15,8 @@ import java.util.ArrayList;
 public class RestController {
     @Autowired
     private HumansServiceImpl humansService;
+    @Autowired
+    private VirusServiceImpl virusService;
     int tic = 6;
     @GetMapping(value = "/getViruses")
     public ArrayList<String> getViruses(){
@@ -46,11 +51,16 @@ public class RestController {
         return new StatisticAnswer(2L *tic,humansService.getRegularPeople(),tic* 2L, humansService.getDiedHuman());
     }
     @GetMapping(value = "/getMapStatistic")
-    public ArrayList<DistrictsAnswer> getMapStatistic(){
-        ArrayList<DistrictsAnswer> districtsAnswers = new ArrayList<>();
-        districtsAnswers.add(new DistrictsAnswer("A0", tic*2/3,11000/3 -tic,tic/3,4*tic/3));
-        districtsAnswers.add(new DistrictsAnswer("B0", tic*2/3,9000/3 -tic,tic*2/3,tic/3));
-        districtsAnswers.add(new DistrictsAnswer("C0", tic*10/3,8000/3 -tic,tic*2/3,2*tic/3));
+    public ArrayList<DistrictStatisticAnswer> getMapStatistic(){
+        ArrayList<DistrictStatisticAnswer> districtsAnswers = new ArrayList<>();
+        districtsAnswers.add(new DistrictStatisticAnswer("A0", tic*10,11000/3 -tic,tic/3,0));
+        districtsAnswers.add(new DistrictStatisticAnswer("B0", tic*2/3,9000/3 -tic,tic*2/3,tic/3));
+        districtsAnswers.add(new DistrictStatisticAnswer("C0", tic/3,8000/3 -tic,tic*2/3,10*tic));
         return districtsAnswers;
+    }
+    @PostMapping(value = "/addVirus")
+    public void addVirus(@RequestBody Virus virus){
+        System.out.println(virus);
+        virusService.addVirus(virus);
     }
 }
