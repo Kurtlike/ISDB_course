@@ -9,5 +9,7 @@ public interface VaccinesService {
     @Transactional
     public void addVaccine(Vaccines vaccine);
     @Transactional
+    public ArrayList<Vaccines> getVaccines();
+    @Transactional
     public ArrayList<Vaccines> getVaccinesFromVirus(Long virusId);
 }

@@ -17,7 +17,7 @@ public class Vaccination {
   @Id
   @Getter
   @Setter
-  private long vaccineId;
+  private String vaccineId;
 
   @Id
   @Getter

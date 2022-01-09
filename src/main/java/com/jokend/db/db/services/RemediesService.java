@@ -9,4 +9,6 @@ public interface RemediesService {
     public ArrayList<Remedies> getRemedies();
     @Transactional
     public Remedies getRemedy(String name);
+    @Transactional
+    public void addRemedy(Remedies remedies);
 }

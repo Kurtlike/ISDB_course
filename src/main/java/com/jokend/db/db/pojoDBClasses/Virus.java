@@ -12,7 +12,7 @@ public class Virus {
   @Id
   @Getter
   @Setter
-  private Integer virusId;
+  private String virusId;
 
   @Getter
   @Setter

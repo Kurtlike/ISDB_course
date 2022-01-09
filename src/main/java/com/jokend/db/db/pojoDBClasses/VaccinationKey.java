@@ -12,7 +12,7 @@ public class VaccinationKey implements Serializable{
 
     @Getter
     @Setter
-    private long vaccineId;
+    private String vaccineId;
 
     @Getter
     @Setter

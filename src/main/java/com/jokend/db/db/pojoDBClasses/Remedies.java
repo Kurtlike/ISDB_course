@@ -16,9 +16,9 @@ public class Remedies {
 
   @Getter
   @Setter
-  private long efficiency;
+  private Integer efficiency;
 
   @Getter
   @Setter
-  private long comfortable;
+  private Integer comfortable;
 }

@@ -11,18 +11,18 @@ import javax.persistence.*;
 public class Vaccines {
   @Getter
   @Setter
-  private long virusId;
+  private String virusId;
 
   @Id
   @Getter
   @Setter
-  private long vaccineId;
+  private String vaccineId;
 
   @Getter
   @Setter
-  private long maxAge;
+  private Integer maxAge;
 
   @Getter
   @Setter
-  private long efficiency;
+  private Integer efficiency;
 }
