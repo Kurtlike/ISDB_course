@@ -19,12 +19,19 @@ public class HumansServiceImpl implements HumansService {
     public Humans getHuman(Long INN) {
         return null;
     }
+
+    @Override
+    public Integer getHumansNumberByDistrictAndStatus(String district, String status) {
+        return humansRepo.getHumansNumberByDistrictAndStatus(district, status);
+    }
+
     public Long getDiedHuman(){
         return humansRepo.getDiedHumansCount();
     }
     public Long getRegularPeople(){
         return  humansRepo.getRegularHumansCount();
     }
-
+    public Long getVaccinatedHumansCount(){return humansRepo.getVaccinatedHumansCount();}
+    public Long getInfectedHumansCount(){return humansRepo.getInfectedHumansCount();}
 
 }

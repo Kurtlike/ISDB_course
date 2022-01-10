@@ -1,12 +1,10 @@
 package com.jokend.db;
 
+import com.jokend.db.db.pojoDBClasses.District;
 import com.jokend.db.db.pojoDBClasses.Remedies;
 import com.jokend.db.db.pojoDBClasses.Vaccines;
 import com.jokend.db.db.pojoDBClasses.Virus;
-import com.jokend.db.db.serviceImpls.HumansServiceImpl;
-import com.jokend.db.db.serviceImpls.RemedyServiceImpl;
-import com.jokend.db.db.serviceImpls.VaccinesServiceImpl;
-import com.jokend.db.db.serviceImpls.VirusServiceImpl;
+import com.jokend.db.db.serviceImpls.*;
 import com.jokend.db.pojoAnswers.Curfew;
 import com.jokend.db.pojoAnswers.DistrictStatisticAnswer;
 import com.jokend.db.pojoAnswers.StatisticAnswer;
@@ -19,6 +17,8 @@ import java.util.ArrayList;
 public class RestController {
     @Autowired
     private HumansServiceImpl humansService;
+    @Autowired
+    private DistrictServiceImpl districtService;
     @Autowired
     private VirusServiceImpl virusService;
     @Autowired
@@ -43,14 +43,19 @@ public class RestController {
     @GetMapping(value = "/getHumanStatistic")
     public StatisticAnswer getHumanStatistic(){
         tic+=3;
-        return new StatisticAnswer(2L *tic,humansService.getRegularPeople(),tic* 2L, humansService.getDiedHuman());
+        return new StatisticAnswer(humansService.getVaccinatedHumansCount(),humansService.getRegularPeople(),humansService.getVaccinatedHumansCount(), humansService.getDiedHuman());
     }
     @GetMapping(value = "/getMapStatistic")
     public ArrayList<DistrictStatisticAnswer> getMapStatistic(){
         ArrayList<DistrictStatisticAnswer> districtsAnswers = new ArrayList<>();
-        districtsAnswers.add(new DistrictStatisticAnswer("A0", tic*10,11000/3 -tic,tic/3,0));
-        districtsAnswers.add(new DistrictStatisticAnswer("B0", tic*2/3,9000/3 -tic,tic*2/3,tic/3));
-        districtsAnswers.add(new DistrictStatisticAnswer("C0", tic/3,8000/3 -tic,tic*2/3,10*tic));
+        ArrayList<District> districts = districtService.getDistricts();
+        districts.forEach((el)->{
+            districtsAnswers.add(new DistrictStatisticAnswer(el.getName(),
+                    humansService.getHumansNumberByDistrictAndStatus(el.getName(), "vaccinated"),
+                    humansService.getHumansNumberByDistrictAndStatus(el.getName(), "ok"),
+                    humansService.getHumansNumberByDistrictAndStatus(el.getName(), "infected"),
+                    humansService.getHumansNumberByDistrictAndStatus(el.getName(), "died")));
+        });
         return districtsAnswers;
     }
     @PostMapping(value = "/addVirus")

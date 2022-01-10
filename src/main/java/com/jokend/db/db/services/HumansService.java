@@ -9,4 +9,6 @@ public interface HumansService {
     @Transactional
     public Humans getHuman(Long INN);
 
+    @Transactional
+    public Integer getHumansNumberByDistrictAndStatus(String district, String status);
 }
