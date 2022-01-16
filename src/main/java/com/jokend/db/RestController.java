@@ -7,6 +7,7 @@ import com.jokend.db.db.pojoDBClasses.Virus;
 import com.jokend.db.db.serviceImpls.*;
 import com.jokend.db.pojoAnswers.Curfew;
 import com.jokend.db.pojoAnswers.DistrictStatisticAnswer;
+import com.jokend.db.pojoAnswers.IntegerAnswer;
 import com.jokend.db.pojoAnswers.StatisticAnswer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -16,15 +17,15 @@ import java.util.ArrayList;
 @org.springframework.web.bind.annotation.RestController
 public class RestController {
     @Autowired
-    private HumansServiceImpl humansService;
+    private HumansService humansService;
     @Autowired
-    private DistrictServiceImpl districtService;
+    private DistrictService districtService;
     @Autowired
-    private VirusServiceImpl virusService;
+    private VirusService virusService;
     @Autowired
-    private VaccinesServiceImpl vaccinesService;
+    private VaccinesService vaccinesService;
     @Autowired
-    private RemedyServiceImpl remedyService;
+    private RemedyService remedyService;
     int tic = 6;
     @GetMapping(value = "/getViruses")
     public ArrayList<Virus> getViruses(){
@@ -81,5 +82,14 @@ public class RestController {
     @PostMapping(value = "/setCurrentCufrew")
     public void setCurrentRemedy(@RequestBody Curfew curfew){
         System.out.println(curfew.getCurfew());
+    }
+
+    @GetMapping(value = "/startSimulation")
+    public void startSimulation(){
+        System.out.println("started");
+    }
+    @PostMapping(value = "/changeSpeed")
+    public void startSimulation(@RequestBody IntegerAnswer speed){
+        System.out.println(speed.getValue());
     }
 }

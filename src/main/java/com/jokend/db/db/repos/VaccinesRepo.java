@@ -15,4 +15,7 @@ public interface VaccinesRepo extends JpaRepository<Vaccines, Long> {
 
     @Query(value = "SELECT * FROM vaccines",nativeQuery=true)
     public ArrayList<Vaccines> getVaccines();
+    @Modifying
+    @Query(value = "DELETE FROM vaccines",nativeQuery=true)
+    public void deleteAll();
 }

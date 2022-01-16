@@ -15,4 +15,7 @@ public interface VirusRepo extends JpaRepository<Virus, Long> {
 
     @Query(value = "SELECT * FROM virus",nativeQuery=true)
     public ArrayList<Virus> getViruses();
+    @Modifying
+    @Query(value = "DELETE FROM virus",nativeQuery=true)
+    public void deleteAll();
 }
