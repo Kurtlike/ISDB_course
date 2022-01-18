@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
 
 public interface HumansRepo extends JpaRepository<Humans,Long> {
 
@@ -26,4 +27,11 @@ public interface HumansRepo extends JpaRepository<Humans,Long> {
     @Modifying
     @Query(value = "UPDATE humans SET status = 'ok';",nativeQuery=true)
     Integer resetStatuses();
+    @Query(value = "SELECT * FROM humans;",nativeQuery=true)
+    ArrayList<Humans> getHumans();
+    @Query(value = "SELECT count(*) FROM humans;",nativeQuery=true)
+    Long getAllHumansCount();
+    @Modifying
+    @Query(value = "UPDATE humans SET status = :status WHERE inn = :INN ;",nativeQuery=true)
+    void setStatus(String status,Long INN);
 }

@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
 
 @Service
 @Transactional
@@ -32,4 +33,7 @@ public class HumansService  {
     public Long getVaccinatedHumansCount(){return humansRepo.getVaccinatedHumansCount();}
     public Long getInfectedHumansCount(){return humansRepo.getInfectedHumansCount();}
     public void resetStatuses(){humansRepo.resetStatuses();}
+    public ArrayList<Humans> getHumans(){return humansRepo.getHumans();}
+    public Long getAllHumansCount(){return humansRepo.getAllHumansCount();}
+    public void setStatus(String status,Long INN){humansRepo.setStatus(status,INN);}
 }

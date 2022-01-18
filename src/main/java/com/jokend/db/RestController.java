@@ -9,6 +9,7 @@ import com.jokend.db.pojoAnswers.Curfew;
 import com.jokend.db.pojoAnswers.DistrictStatisticAnswer;
 import com.jokend.db.pojoAnswers.IntegerAnswer;
 import com.jokend.db.pojoAnswers.StatisticAnswer;
+import com.jokend.db.simulation.Simulator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,7 +27,8 @@ public class RestController {
     private VaccinesService vaccinesService;
     @Autowired
     private RemedyService remedyService;
-    int tic = 6;
+    @Autowired
+    private Simulator simulator;
     @GetMapping(value = "/getViruses")
     public ArrayList<Virus> getViruses(){
         return virusService.getViruses();
@@ -43,8 +45,7 @@ public class RestController {
     }
     @GetMapping(value = "/getHumanStatistic")
     public StatisticAnswer getHumanStatistic(){
-        tic+=3;
-        return new StatisticAnswer(humansService.getVaccinatedHumansCount(),humansService.getRegularPeople(),humansService.getVaccinatedHumansCount(), humansService.getDiedHuman());
+        return new StatisticAnswer(humansService.getVaccinatedHumansCount(), humansService.getRegularPeople(), humansService.getInfectedHumansCount(), humansService.getDiedHuman());
     }
     @GetMapping(value = "/getMapStatistic")
     public ArrayList<DistrictStatisticAnswer> getMapStatistic(){
@@ -86,10 +87,10 @@ public class RestController {
 
     @GetMapping(value = "/startSimulation")
     public void startSimulation(){
-        System.out.println("started");
+        simulator.startSimulation();
     }
     @PostMapping(value = "/changeSpeed")
     public void startSimulation(@RequestBody IntegerAnswer speed){
-        System.out.println(speed.getValue());
+        simulator.setSpeed(speed.getValue());
     }
 }
