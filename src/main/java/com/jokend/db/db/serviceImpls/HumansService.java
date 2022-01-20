@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.sql.Time;
 import java.util.ArrayList;
 
 @Service
@@ -17,13 +18,13 @@ public class HumansService  {
     private HumansRepo humansRepo;
 
     public Humans getHuman(Long INN) {
-        return null;
+        return humansRepo.getHumanBYINN(INN);
     }
 
     public Integer getHumansNumberByDistrictAndStatus(String district, String status) {
         return humansRepo.getHumansNumberByDistrictAndStatus(district, status);
     }
-
+    public Long getAliveHumansCount(){return humansRepo.getAliveHumansCount();};
     public Long getDiedHuman(){
         return humansRepo.getDiedHumansCount();
     }
@@ -36,4 +37,5 @@ public class HumansService  {
     public ArrayList<Humans> getHumans(){return humansRepo.getHumans();}
     public Long getAllHumansCount(){return humansRepo.getAllHumansCount();}
     public void setStatus(String status,Long INN){humansRepo.setStatus(status,INN);}
+    public ArrayList<Long> getHumansINNByPlaceAndTime(Integer place, Time time){ return  humansRepo.getHumansINNByPlaceAndTime(place, time);};
 }

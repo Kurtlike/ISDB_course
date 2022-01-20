@@ -8,6 +8,7 @@ import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -35,10 +36,17 @@ public class Simulator {
     private DistrictService districtService;
     @Autowired
     private MovingsService movingsService;
+    @Autowired
+    private PublicPlaceService placeService;
+    @Autowired
+    private StaffService staffService;
     public void startSimulation(){
+        LocalDateTime time = LocalDateTime.of(2021,1,1,8,0);
         clearTables();
         ArrayList<Humans> humans = humansService.getHumans();
-        int iter = 0;
+        ArrayList<PublicPlaces> publicPlaces = placeService.getPlaces();
+
+        //main simulation circle
         while(humansService.getDiedHuman().longValue() != humansService.getAllHumansCount().longValue()){
             try {
                 while (speed == 0);
@@ -46,15 +54,13 @@ public class Simulator {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            int currIter = iter;
-            for(int i = iter; i < iter + 10; i++){
-                if(i < humans.size()){
-                    humansService.setStatus("died",humans.get(i).getInn());
-                    currIter++;
-                }
-            }
-            iter = currIter;
+            ArrayList<DangerousPlace> dangerousPlaces = new ArrayList<>();
+            humans.forEach(human->{
+                if(human.getStatus().equals("infected")){
 
+                }
+            });
+            time = time.plusMinutes(30);
         }
 
     }
