@@ -9,9 +9,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.stream.Stream;
 
 @Service
 public class Simulator {
@@ -40,7 +43,11 @@ public class Simulator {
     private PublicPlaceService placeService;
     @Autowired
     private StaffService staffService;
+    //REMOVE
+    private Virus testVirus = new Virus();
+
     public void startSimulation(){
+        configTestVirus();
         LocalDateTime time = LocalDateTime.of(2021,1,1,8,0);
         clearTables();
         ArrayList<Humans> humans = humansService.getHumans();
@@ -55,9 +62,18 @@ public class Simulator {
                 e.printStackTrace();
             }
             ArrayList<DangerousPlace> dangerousPlaces = new ArrayList<>();
+            java.sql.Time finalTime = java.sql.Time.valueOf(LocalTime.from(time));
             humans.forEach(human->{
                 if(human.getStatus().equals("infected")){
-
+                    Integer place = humansService.getPlaceByHumansINNAndTime(human.getInn(), finalTime);
+                    ArrayList<Long> humansInDanger = humansService.getHumansINNByPlaceAndTime(place, finalTime);
+                    humansInDanger.forEach(humanINN ->{
+                        Humans humanInDanger = getHumanByINN(humanINN, humans);
+                        if(isInfected(humanInDanger, testVirus, getPublicPlaceById(place, publicPlaces))){
+                            humanInDanger.setStatus("infected");
+                            //addNewIllnessCreation
+                        }
+                    });
                 }
             });
             time = time.plusMinutes(30);
@@ -71,6 +87,27 @@ public class Simulator {
         System.out.println(res);
         return true;
     }
+
+    private Humans getHumanByINN(long INN, ArrayList<Humans> humans){
+        List<Humans> ans = (List<Humans>) humans.stream().filter(hum -> hum.getInn() == INN);
+        return ans.get(0);
+    }
+
+
+    private PublicPlaces getPublicPlaceById(Integer ID, ArrayList<PublicPlaces> publicPlaces){
+        List<PublicPlaces> ans = (List<PublicPlaces>) publicPlaces.stream().filter(places -> places.getId() == ID);
+        return ans.get(0);
+    }
+
+    //REMOVE
+    private void configTestVirus(){
+        testVirus.setVirusId("test");
+        testVirus.setAsymptomaticProb(1);
+        testVirus.setIncubationPeriod(10);
+        testVirus.setInfectiousness(1);
+        testVirus.setMortality(1);
+    }
+
     private void clearTables(){
         humansService.resetStatuses();
         vaccinesService.deleteAll();

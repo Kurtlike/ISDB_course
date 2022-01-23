@@ -47,4 +47,12 @@ public interface HumansRepo extends JpaRepository<Humans,Long> {
             "\t\tAND end_time > :time\n" +
             "\t\tAND place_id = :place;",nativeQuery=true)
     ArrayList<Long> getHumansINNByPlaceAndTime(Integer place, Time time);
+
+    @Query(value = "SELECT place_id FROM public_places\n" +
+            "\tJOIN staff ON place_id = id\n" +
+            "\tJOIN humans ON humans.inn = staff.inn\n" +
+            "\tWHERE start_time < :time \n" +
+            "\t\tAND end_time > :time\n" +
+            "\t\tAND humans.inn = :ID;",nativeQuery=true)
+    Integer getPlaceByHumansINNAndTime(long ID, Time time);
 }
