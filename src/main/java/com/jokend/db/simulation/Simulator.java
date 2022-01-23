@@ -52,6 +52,7 @@ public class Simulator {
         clearTables();
         ArrayList<Humans> humans = humansService.getHumans();
         ArrayList<PublicPlaces> publicPlaces = placeService.getPlaces();
+        ArrayList<Staff> staff = staffService.getStaff();
 
         //main simulation circle
         while(humansService.getDiedHuman().longValue() != humansService.getAllHumansCount().longValue()){
@@ -63,17 +64,25 @@ public class Simulator {
             }
             ArrayList<DangerousPlace> dangerousPlaces = new ArrayList<>();
             java.sql.Time finalTime = java.sql.Time.valueOf(LocalTime.from(time));
+            LocalDateTime finalTime1 = time;
             humans.forEach(human->{
-                if(human.getStatus().equals("infected")){
-                    Integer place = humansService.getPlaceByHumansINNAndTime(human.getInn(), finalTime);
-                    ArrayList<Long> humansInDanger = humansService.getHumansINNByPlaceAndTime(place, finalTime);
-                    humansInDanger.forEach(humanINN ->{
-                        Humans humanInDanger = getHumanByINN(humanINN, humans);
-                        if(isInfected(humanInDanger, testVirus, getPublicPlaceById(place, publicPlaces))){
-                            humanInDanger.setStatus("infected");
-                            //addNewIllnessCreation
+                if(!human.getStatus().equals("dead")) {
+                    if (human.getStatus().equals("infected") /*add incubation time check*/) {
+                        Integer place = humansService.getPlaceByHumansINNAndTime(human.getInn(), finalTime);
+                        if(place != null) {
+                            ArrayList<Long> humansInDanger = humansService.getHumansINNByPlaceAndTime(place, finalTime);
+                            humansInDanger.forEach(humanINN -> {
+                                Humans humanInDanger = humansService.getHuman(humanINN);
+                                if (humanInDanger.getStatus().equals("ok") && isInfected(humanInDanger, testVirus, getPublicPlaceById(place, publicPlaces))) {
+                                    humanInDanger.setStatus("infected");
+                                    //addNewIllnessCreation
+                                }
+                            });
                         }
-                    });
+                    }
+                    if (getStaffByINN(human.getInn(), staff).getStartTime().equals(java.sql.Time.valueOf(LocalTime.from(finalTime1.plusMinutes(30))))) {
+                        //addMoving();
+                    }
                 }
             });
             time = time.plusMinutes(30);
@@ -83,25 +92,24 @@ public class Simulator {
     private boolean isInfected(Humans human, Virus virus, PublicPlaces place){
         Remedies remedy = remedyService.getRemedy(human.getRemedy());
         District district = districtService.getDistrict(human.getDistrict());
-        double res = (virus.getInfectiousness() * place.getAvrTimeVisitor() * place.getCapacity())/(remedy.getEfficiency() * district.getLivingStandard());
+        double res = (virus.getInfectiousness() * place.getAvrTimeVisitor() * place.getCapacity())/(place.getArea() * remedy.getEfficiency() * district.getLivingStandard());
         System.out.println(res);
         return true;
     }
-
-    private Humans getHumanByINN(long INN, ArrayList<Humans> humans){
-        List<Humans> ans = (List<Humans>) humans.stream().filter(hum -> hum.getInn() == INN);
-        return ans.get(0);
-    }
-
 
     private PublicPlaces getPublicPlaceById(Integer ID, ArrayList<PublicPlaces> publicPlaces){
         List<PublicPlaces> ans = (List<PublicPlaces>) publicPlaces.stream().filter(places -> places.getId() == ID);
         return ans.get(0);
     }
 
+    private Staff getStaffByINN(long INN, ArrayList<Staff> staff){
+        List<Staff> ans = (List<Staff>) staff.stream().filter(stf -> stf.getInn() == INN);
+        return ans.get(0);
+    }
+
     //REMOVE
     private void configTestVirus(){
-        testVirus.setVirusId("test");
+        testVirus.setVirusId("1");
         testVirus.setAsymptomaticProb(1);
         testVirus.setIncubationPeriod(10);
         testVirus.setInfectiousness(1);

@@ -9,6 +9,6 @@ import org.springframework.data.jpa.repository.Query;
 public interface MovingsRepo extends JpaRepository<Movings, MovingsKey> {
 
     @Modifying
-    @Query(value = "DELETE FROM virus",nativeQuery=true)
+    @Query(value = "DELETE FROM movings",nativeQuery=true)
     public void deleteAll();
 }
