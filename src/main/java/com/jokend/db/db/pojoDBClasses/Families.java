@@ -9,13 +9,14 @@ import javax.persistence.*;
 @ToString
 @Table(name = "families")
 @Entity
-
+@IdClass(FamiliesKey.class)
 public class Families {
   @Id
   @Getter
   @Setter
   private long id;
 
+  @Id
   @Getter
   @Setter
   private long inn;

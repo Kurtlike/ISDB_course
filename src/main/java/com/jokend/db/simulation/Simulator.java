@@ -28,6 +28,8 @@ public class Simulator {
     @Autowired
     private HumansService humansService;
     @Autowired
+    private FamiliesService familiesService;
+    @Autowired
     private RemedyService remedyService;
     @Autowired
     private VaccinesService vaccinesService;
@@ -68,36 +70,58 @@ public class Simulator {
             LocalDateTime finalTime1 = time;
             humans.forEach(human->{
                 if(!human.getStatus().equals("dead")) {
+                    Staff presPerson = getStaffByINN(human.getInn(), staff);
+                    if (presPerson != null && presPerson.getStartTime().equals(java.sql.Time.valueOf(LocalTime.from(finalTime1.plusMinutes(30))))) {
+                        //addMoving();
+                    }
+                    if (presPerson != null && presPerson.getEndTime().equals(java.sql.Time.valueOf(LocalTime.from(finalTime1)))) {
+                        //addMoving();
+                    }
                     if (human.getStatus().equals("infected") /*add incubation time check*/) {
+                        System.out.println("Жертвы человека с ИНН " + human.getInn() + ":");
                         Integer place = humansService.getPlaceByHumansINNAndTime(human.getInn(), finalTime);
                         if(place != null) {
                             ArrayList<Long> humansInDanger = humansService.getHumansINNByPlaceAndTime(place, finalTime);
                             humansInDanger.forEach(humanINN -> {
-                                Humans humanInDanger = humansService.getHuman(humanINN);
+                                Humans humanInDanger = getHuman(humanINN, humans);
                                 if (humanInDanger.getStatus().equals("ok") && isInfected(humanInDanger, testVirus, getPublicPlaceById(place, publicPlaces))) {
                                     humanInDanger.setStatus("infected");
                                     humansService.setStatus("infected", humanINN);
+                                    //addNewIllnessCreation
+                                    System.out.println("\tЗаражён на работе: " + humanINN);
+                                }
+                            });
+                        }else if (presPerson != null && !presPerson.getStartTime().equals(java.sql.Time.valueOf(LocalTime.from(finalTime1.plusMinutes(30)))) && !presPerson.getEndTime().equals(java.sql.Time.valueOf(LocalTime.from(finalTime1)))){
+                            ArrayList<Long> humansInDanger = familiesService.getFamiliesMembersById(familiesService.getFamiliesByINN(presPerson.getInn()).getId());
+                            humansInDanger.forEach(humanINN -> {
+                                Humans humanInDanger = getHuman(humanINN, humans);
+                                if (humanInDanger.getStatus().equals("ok") && isInfected(humanInDanger, testVirus)) {
+                                    humanInDanger.setStatus("infected");
+                                    humansService.setStatus("infected", humanINN);
+                                    System.out.println("\tЗаражён в семье: " + humanINN);
                                     //addNewIllnessCreation
                                 }
                             });
                         }
                     }
-                    Staff presPerson = getStaffByINN(human.getInn(), staff);
-                    if (presPerson != null && presPerson.getStartTime().equals(java.sql.Time.valueOf(LocalTime.from(finalTime1.plusMinutes(30))))) {
-                        //addMoving();
-                    }
                 }
             });
             time = time.plusMinutes(30);
+            System.out.println(time.toString());
         }
 
     }
+
+    private boolean isInfected(Humans human, Virus virus) {
+        return Math.random() < 0.01;
+    }
+
     private boolean isInfected(Humans human, Virus virus, PublicPlaces place){
         //Remedies remedy = remedyService.getRemedy(human.getRemedy());
         District district = districtService.getDistrict(human.getDistrict());
         //double res = (virus.getInfectiousness() * /*place.getAvrTimeVisitor() **/ place.getCapacity())/(place.getArea() * /*remedy.getEfficiency() **/ district.getLivingStandard());
         //System.out.println(res);
-        return true;
+        return Math.random() < 0.01;
     }
 
     private PublicPlaces getPublicPlaceById(Integer ID, ArrayList<PublicPlaces> publicPlaces){
@@ -111,6 +135,15 @@ public class Simulator {
 
     private Staff getStaffByINN(long INN, ArrayList<Staff> staff){
         for(Staff ans : staff){
+            if(ans.getInn() == INN){
+                return ans;
+            }
+        }
+        return null;
+    }
+
+    private Humans getHuman(long INN, ArrayList<Humans> humans){
+        for(Humans ans : humans){
             if(ans.getInn() == INN){
                 return ans;
             }

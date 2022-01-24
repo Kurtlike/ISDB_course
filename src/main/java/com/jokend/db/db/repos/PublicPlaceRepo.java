@@ -8,6 +8,6 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.ArrayList;
 
 public interface PublicPlaceRepo extends JpaRepository<PublicPlaces, Long> {
-    @Query(value = "SELECT * FROM public_places;",nativeQuery=true)
+    @Query(value = "SELECT * FROM public_places",nativeQuery=true)
     ArrayList<PublicPlaces> getPlaces();
 }

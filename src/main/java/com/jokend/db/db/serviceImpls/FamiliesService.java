@@ -15,7 +15,10 @@ import java.util.ArrayList;
 public class FamiliesService {
     @Autowired
     private FamiliesRepo familiesRepo;
-    public ArrayList<Families> getFamiliesByINN(Long inn){
+    public Families getFamiliesByINN(Long inn){
         return familiesRepo.getFamiliesByInn(inn);
+    }
+    public ArrayList<Long> getFamiliesMembersById(Long Id){
+        return familiesRepo.getFamiliesMembersById(Id);
     }
 }
