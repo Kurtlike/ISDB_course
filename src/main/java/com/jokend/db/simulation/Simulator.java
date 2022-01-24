@@ -20,7 +20,7 @@ import java.util.stream.Stream;
 public class Simulator {
     @Getter
     @Setter
-    private int speed = 1;
+    private int speed = 20;
     @Autowired
     private Curfew curfew;
     @Autowired
@@ -53,7 +53,8 @@ public class Simulator {
         ArrayList<Humans> humans = humansService.getHumans();
         ArrayList<PublicPlaces> publicPlaces = placeService.getPlaces();
         ArrayList<Staff> staff = staffService.getStaff();
-
+        humans.get(1).setStatus("infected");
+        humansService.setStatus("infected", humans.get(1).getInn());
         //main simulation circle
         while(humansService.getDiedHuman().longValue() != humansService.getAllHumansCount().longValue()){
             try {
@@ -75,12 +76,14 @@ public class Simulator {
                                 Humans humanInDanger = humansService.getHuman(humanINN);
                                 if (humanInDanger.getStatus().equals("ok") && isInfected(humanInDanger, testVirus, getPublicPlaceById(place, publicPlaces))) {
                                     humanInDanger.setStatus("infected");
+                                    humansService.setStatus("infected", humanINN);
                                     //addNewIllnessCreation
                                 }
                             });
                         }
                     }
-                    if (getStaffByINN(human.getInn(), staff).getStartTime().equals(java.sql.Time.valueOf(LocalTime.from(finalTime1.plusMinutes(30))))) {
+                    Staff presPerson = getStaffByINN(human.getInn(), staff);
+                    if (presPerson != null && presPerson.getStartTime().equals(java.sql.Time.valueOf(LocalTime.from(finalTime1.plusMinutes(30))))) {
                         //addMoving();
                     }
                 }
@@ -90,21 +93,29 @@ public class Simulator {
 
     }
     private boolean isInfected(Humans human, Virus virus, PublicPlaces place){
-        Remedies remedy = remedyService.getRemedy(human.getRemedy());
+        //Remedies remedy = remedyService.getRemedy(human.getRemedy());
         District district = districtService.getDistrict(human.getDistrict());
-        double res = (virus.getInfectiousness() * place.getAvrTimeVisitor() * place.getCapacity())/(place.getArea() * remedy.getEfficiency() * district.getLivingStandard());
-        System.out.println(res);
+        //double res = (virus.getInfectiousness() * /*place.getAvrTimeVisitor() **/ place.getCapacity())/(place.getArea() * /*remedy.getEfficiency() **/ district.getLivingStandard());
+        //System.out.println(res);
         return true;
     }
 
     private PublicPlaces getPublicPlaceById(Integer ID, ArrayList<PublicPlaces> publicPlaces){
-        List<PublicPlaces> ans = (List<PublicPlaces>) publicPlaces.stream().filter(places -> places.getId() == ID);
-        return ans.get(0);
+        for(PublicPlaces ans : publicPlaces){
+            if(ans.getId() == ID){
+                return ans;
+            }
+        }
+        return null;
     }
 
     private Staff getStaffByINN(long INN, ArrayList<Staff> staff){
-        List<Staff> ans = (List<Staff>) staff.stream().filter(stf -> stf.getInn() == INN);
-        return ans.get(0);
+        for(Staff ans : staff){
+            if(ans.getInn() == INN){
+                return ans;
+            }
+        }
+        return null;
     }
 
     //REMOVE

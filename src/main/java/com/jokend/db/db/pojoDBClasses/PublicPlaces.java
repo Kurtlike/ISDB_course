@@ -35,13 +35,13 @@ public class PublicPlaces {
   @Setter
   private long area;
 
-  @Getter
-  @Setter
-  private long avrTimeVisitor;
+  //@Getter
+  //@Setter
+  //private int avrTimeVisitor;
 
-  @Getter
-  @Setter
-  private long avrTimeStaff;
+  //@Getter
+  //@Setter
+  //private int avrTimeStaff;
 
   @Getter
   @Setter

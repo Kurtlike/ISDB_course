@@ -24,7 +24,7 @@ public class HumansService  {
     public Integer getHumansNumberByDistrictAndStatus(String district, String status) {
         return humansRepo.getHumansNumberByDistrictAndStatus(district, status);
     }
-    public Long getAliveHumansCount(){return humansRepo.getAliveHumansCount();};
+    public Long getAliveHumansCount(){return humansRepo.getAliveHumansCount();}
     public Long getDiedHuman(){
         return humansRepo.getDiedHumansCount();
     }
@@ -37,6 +37,6 @@ public class HumansService  {
     public ArrayList<Humans> getHumans(){return humansRepo.getHumans();}
     public Long getAllHumansCount(){return humansRepo.getAllHumansCount();}
     public void setStatus(String status,Long INN){humansRepo.setStatus(status,INN);}
-    public ArrayList<Long> getHumansINNByPlaceAndTime(Integer place, Time time){ return  humansRepo.getHumansINNByPlaceAndTime(place, time);};
-    public Integer getPlaceByHumansINNAndTime(long ID, Time time){ return  humansRepo.getPlaceByHumansINNAndTime(ID, time);};
+    public ArrayList<Long> getHumansINNByPlaceAndTime(Integer place, Time time){ return  humansRepo.getHumansINNByPlaceAndTime(place, time);}
+    public Integer getPlaceByHumansINNAndTime(Long INN, Time time){ return  humansRepo.getPlaceByHumansINNAndTime(INN, time);}
 }
