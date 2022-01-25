@@ -56,10 +56,10 @@ public class Simulator {
     private Virus testVirus = new Virus();
 
     public void startSimulation(){
+        clearTables();
         configTestVirus();
         virusService.addVirus(testVirus);
         time = LocalDateTime.of(2021,1,1,8,0);
-        clearTables();
         ArrayList<Humans> humans = humansService.getHumans();
         ArrayList<PublicTransport> transports = transportService.getTransport();
         ArrayList<PublicPlaces> publicPlaces = placeService.getPlaces();
