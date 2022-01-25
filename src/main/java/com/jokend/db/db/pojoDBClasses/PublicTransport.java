@@ -16,11 +16,11 @@ public class PublicTransport {
 
   @Getter
   @Setter
-  private String district1;
+  private String district_1;
 
   @Getter
   @Setter
-  private String district2;
+  private String district_2;
 
   @Getter
   @Setter

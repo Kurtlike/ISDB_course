@@ -8,6 +8,8 @@ import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.sql.SQLOutput;
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -20,7 +22,7 @@ import java.util.stream.Stream;
 public class Simulator {
     @Getter
     @Setter
-    private int speed = 20;
+    private int speed = 10000;
     @Autowired
     private Curfew curfew;
     @Autowired
@@ -44,6 +46,8 @@ public class Simulator {
     @Autowired
     private PublicPlaceService placeService;
     @Autowired
+    private PublicTransportService transportService;
+    @Autowired
     private StaffService staffService;
     //REMOVE
     private Virus testVirus = new Virus();
@@ -53,6 +57,7 @@ public class Simulator {
         LocalDateTime time = LocalDateTime.of(2021,1,1,8,0);
         clearTables();
         ArrayList<Humans> humans = humansService.getHumans();
+        ArrayList<PublicTransport> transports = transportService.getTransport();
         ArrayList<PublicPlaces> publicPlaces = placeService.getPlaces();
         ArrayList<Staff> staff = staffService.getStaff();
         humans.get(1).setStatus("infected");
@@ -65,21 +70,27 @@ public class Simulator {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
+            ArrayList<Movings> moves = new ArrayList<>();
             ArrayList<DangerousPlace> dangerousPlaces = new ArrayList<>();
             java.sql.Time finalTime = java.sql.Time.valueOf(LocalTime.from(time));
             LocalDateTime finalTime1 = time;
             humans.forEach(human->{
                 if(!human.getStatus().equals("dead")) {
                     Staff presPerson = getStaffByINN(human.getInn(), staff);
-                    if (presPerson != null && presPerson.getStartTime().equals(java.sql.Time.valueOf(LocalTime.from(finalTime1.plusMinutes(30))))) {
-                        //addMoving();
-                    }
-                    if (presPerson != null && presPerson.getEndTime().equals(java.sql.Time.valueOf(LocalTime.from(finalTime1)))) {
-                        //addMoving();
+                    Movings move = new Movings();
+                    if (presPerson != null && (presPerson.getStartTime().equals(java.sql.Time.valueOf(LocalTime.from(finalTime1.plusMinutes(30)))) || presPerson.getEndTime().equals(java.sql.Time.valueOf(LocalTime.from(finalTime1))))) {
+                        if(!human.getDistrict().equals(getPublicPlaceById(presPerson.getPlaceId(), publicPlaces).getDistrict())) {
+                            PublicTransport trans = getPublicTransport(human.getDistrict(), getPublicPlaceById(presPerson.getPlaceId(), publicPlaces).getDistrict(), transports);
+                            move.setPublicTransport(trans.getId());
+                            move.setInn(human.getInn());
+                            move.setDate(Timestamp.valueOf(finalTime1.plusMinutes(trans.getPeriod() * Math.round(30 / trans.getPeriod()))));
+                            moves.add(move);
+                            //movingService.add(move);
+                        }
                     }
                     if (human.getStatus().equals("infected") /*add incubation time check*/) {
-                        System.out.println("Жертвы человека с ИНН " + human.getInn() + ":");
-                        Integer place = humansService.getPlaceByHumansINNAndTime(human.getInn(), finalTime);
+                        //System.out.println("Жертвы человека с ИНН " + human.getInn() + ":");
+                        Long place = humansService.getPlaceByHumansINNAndTime(human.getInn(), finalTime);
                         if(place != null) {
                             ArrayList<Long> humansInDanger = humansService.getHumansINNByPlaceAndTime(place, finalTime);
                             humansInDanger.forEach(humanINN -> {
@@ -106,10 +117,34 @@ public class Simulator {
                     }
                 }
             });
+            moves.forEach(move -> {
+                if(getHuman(move.getInn(), humans).getStatus().equals("infected")){
+                    ArrayList<Long> humansInDanger = getDangerBus(move, moves);
+                    humansInDanger.forEach(humanINN -> {
+                        Humans humanInDanger = getHuman(humanINN, humans);
+                        if (humanInDanger.getStatus().equals("ok") && isInfected(humanInDanger, testVirus)) {
+                            humanInDanger.setStatus("infected");
+                            humansService.setStatus("infected", humanINN);
+                            System.out.println("\tЗаражён в транспорте: " + humanINN);
+                            //addNewIllnessCreation
+                        }
+                    });
+                }
+            });
             time = time.plusMinutes(30);
             System.out.println(time.toString());
         }
 
+    }
+
+    private ArrayList<Long> getDangerBus(Movings move, ArrayList<Movings> moves) {
+        ArrayList<Long> ans = new ArrayList<>();
+        for(Movings check : moves){
+            if(check.getDate().equals(move.getDate()) && check.getPublicTransport() == move.getPublicTransport()){
+                ans.add(check.getInn());
+            }
+        }
+        return ans;
     }
 
     private boolean isInfected(Humans human, Virus virus) {
@@ -124,9 +159,19 @@ public class Simulator {
         return Math.random() < 0.01;
     }
 
-    private PublicPlaces getPublicPlaceById(Integer ID, ArrayList<PublicPlaces> publicPlaces){
+    private PublicPlaces getPublicPlaceById(Long ID, ArrayList<PublicPlaces> publicPlaces){
         for(PublicPlaces ans : publicPlaces){
             if(ans.getId() == ID){
+                return ans;
+            }
+        }
+        return null;
+    }
+
+    private PublicTransport getPublicTransport(String Dis1, String Dis2, ArrayList<PublicTransport> publicTransports){
+        for(PublicTransport ans : publicTransports){
+            System.out.println(ans.getDistrict_1() + " " + ans.getDistrict_2());
+            if((ans.getDistrict_1().equals(Dis1) && ans.getDistrict_2().equals(Dis2))||(ans.getDistrict_2().equals(Dis1) && ans.getDistrict_1().equals(Dis2))){
                 return ans;
             }
         }
