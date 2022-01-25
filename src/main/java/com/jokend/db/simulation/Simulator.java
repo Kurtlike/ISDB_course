@@ -64,6 +64,7 @@ public class Simulator {
         ArrayList<Illness> illnesses = new ArrayList<>();
         humans.get(1).setStatus("infected");
         humansService.setStatus("infected", humans.get(1).getInn());
+        illnesses.add(createIllness(time, Long.parseLong(testVirus.getVirusId()), humans.get(1).getInn(), -1, Long.valueOf(-1), "incubation"));
         //main simulation circle
         while(humansService.getDiedHuman().longValue() != humansService.getAllHumansCount().longValue()){
             try {
@@ -90,7 +91,7 @@ public class Simulator {
                             //movingService.add(move);
                         }
                     }
-                    if (human.getStatus().equals("infected") /*add incubation time check*/) {
+                    if (contagiousCheck(human, illnesses)) {
                         //System.out.println("Жертвы человека с ИНН " + human.getInn() + ":");
                         Long place = humansService.getPlaceByHumansINNAndTime(human.getInn(), finalTime);
                         if(place != null) {
@@ -101,7 +102,7 @@ public class Simulator {
                                     humanInDanger.setStatus("infected");
                                     humansService.setStatus("infected", humanINN);
                                     Long virusId = findVirusId(human, illnesses);
-                                    illnesses.add(createIllness(finalTime, virusId, humanInDanger.getInn(), human.getInn(), place, "incubation"));
+                                    illnesses.add(createIllness(finalTime1, virusId, humanInDanger.getInn(), human.getInn(), place, "incubation"));
                                     System.out.println("\tЗаражён на работе: " + humanINN);
                                 }
                             });
@@ -113,7 +114,7 @@ public class Simulator {
                                     humanInDanger.setStatus("infected");
                                     humansService.setStatus("infected", humanINN);
                                     Long virusId = findVirusId(human, illnesses);
-                                    illnesses.add(createIllness(finalTime, virusId, humanInDanger.getInn(), human.getInn(), null, "incubation"));
+                                    illnesses.add(createIllness(finalTime1, virusId, humanInDanger.getInn(), human.getInn(), Long.valueOf(-1), "incubation"));
                                     System.out.println("\tЗаражён в семье: " + humanINN);
                                     //addNewIllnessCreation
                                 }
@@ -123,7 +124,7 @@ public class Simulator {
                 }
             });
             moves.forEach(move -> {
-                if(getHuman(move.getInn(), humans).getStatus().equals("infected")){
+                if(contagiousCheck(getHuman(move.getInn(), humans), illnesses)){
                     ArrayList<Long> humansInDanger = getDangerBus(move, moves);
                     humansInDanger.forEach(humanINN -> {
                         Humans humanInDanger = getHuman(humanINN, humans);
@@ -131,7 +132,7 @@ public class Simulator {
                             humanInDanger.setStatus("infected");
                             humansService.setStatus("infected", humanINN);
                             Long virusId = findVirusId(getHuman(move.getInn(), humans), illnesses);
-                            illnesses.add(createIllness(finalTime, virusId, humanInDanger.getInn(), move.getInn(), null, "incubation"));
+                            illnesses.add(createIllness(finalTime1, virusId, humanInDanger.getInn(), move.getInn(), Long.valueOf(-1), "incubation"));
                             System.out.println("\tЗаражён в транспорте: " + humanINN);
                             //addNewIllnessCreation
                         }
@@ -139,9 +140,20 @@ public class Simulator {
                 }
             });
             illnesses.forEach(illness -> {
-                //if(finalTime1.minusDays(testVirus.getIncubationPeriod()).isBefore(illness.getDateOfInfection())){
-
-                //}
+                if(illness.getStatus().equals("incubation") && Timestamp.valueOf((finalTime1.minusDays(testVirus.getIncubationPeriod()))).getTime() > (illness.getDateOfInfection()).getTime()){
+                    illness.setStatus("contagious");
+                }
+                if(illness.getStatus().equals("contagious") && Timestamp.valueOf((finalTime1.minusDays(testVirus.getIncubationPeriod() * 3))).getTime() > (illness.getDateOfInfection()).getTime()){
+                    if(Math.random() > 0.1 * testVirus.getMortality()){
+                        getHuman(illness.getInnInjured(), humans).setStatus("ok");
+                        illness.setStatus("healthy");
+                        humansService.setStatus("ok", illness.getInnInjured());
+                    }else{
+                        getHuman(illness.getInnInjured(), humans).setStatus("dead");
+                        illness.setStatus("dead");
+                        humansService.setStatus("dead", illness.getInnInjured());
+                    }
+                }
             });
             time = time.plusMinutes(30);
             System.out.println(time.toString());
@@ -149,10 +161,10 @@ public class Simulator {
 
     }
 
-    private Illness createIllness(Time finalTime, Long virusId, long inn, long inn1, Long place, String status) {
+    private Illness createIllness(LocalDateTime finalTime, Long virusId, long inn, long inn1, Long place, String status) {
         Illness ans = new Illness();
         ans.setStatus(status);
-        ans.setDateOfInfection(Timestamp.valueOf(String.valueOf(finalTime)));
+        ans.setDateOfInfection(Timestamp.valueOf(finalTime));
         ans.setVirusId(virusId);
         ans.setInnInjured(inn);
         ans.setInnCarrier(inn1);
@@ -168,6 +180,23 @@ public class Simulator {
             }
         }
         return ans;
+    }
+
+    private boolean contagiousCheck(Humans human, ArrayList<Illness> illnesses){
+        try {
+            return human.getStatus().equals("infected") && getIllness(human, illnesses).getStatus().equals("contagious");
+        }catch (NullPointerException e){
+            return false;
+        }
+    }
+
+    private Illness getIllness(Humans human, ArrayList<Illness> illnesses) {
+        for(Illness ans : illnesses){
+            if(ans.getInnInjured() == human.getInn()){
+                return ans;
+            }
+        }
+        return null;
     }
 
     private ArrayList<Long> getDangerBus(Movings move, ArrayList<Movings> moves) {
