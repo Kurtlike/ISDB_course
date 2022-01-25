@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.SQLOutput;
+import java.sql.Time;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -60,6 +61,7 @@ public class Simulator {
         ArrayList<PublicTransport> transports = transportService.getTransport();
         ArrayList<PublicPlaces> publicPlaces = placeService.getPlaces();
         ArrayList<Staff> staff = staffService.getStaff();
+        ArrayList<Illness> illnesses = new ArrayList<>();
         humans.get(1).setStatus("infected");
         humansService.setStatus("infected", humans.get(1).getInn());
         //main simulation circle
@@ -98,7 +100,8 @@ public class Simulator {
                                 if (humanInDanger.getStatus().equals("ok") && isInfected(humanInDanger, testVirus, getPublicPlaceById(place, publicPlaces))) {
                                     humanInDanger.setStatus("infected");
                                     humansService.setStatus("infected", humanINN);
-                                    //addNewIllnessCreation
+                                    Long virusId = findVirusId(human, illnesses);
+                                    illnesses.add(createIllness(finalTime, virusId, humanInDanger.getInn(), human.getInn(), place, "incubation"));
                                     System.out.println("\tЗаражён на работе: " + humanINN);
                                 }
                             });
@@ -109,6 +112,8 @@ public class Simulator {
                                 if (humanInDanger.getStatus().equals("ok") && isInfected(humanInDanger, testVirus)) {
                                     humanInDanger.setStatus("infected");
                                     humansService.setStatus("infected", humanINN);
+                                    Long virusId = findVirusId(human, illnesses);
+                                    illnesses.add(createIllness(finalTime, virusId, humanInDanger.getInn(), human.getInn(), null, "incubation"));
                                     System.out.println("\tЗаражён в семье: " + humanINN);
                                     //addNewIllnessCreation
                                 }
@@ -125,16 +130,44 @@ public class Simulator {
                         if (humanInDanger.getStatus().equals("ok") && isInfected(humanInDanger, testVirus)) {
                             humanInDanger.setStatus("infected");
                             humansService.setStatus("infected", humanINN);
+                            Long virusId = findVirusId(getHuman(move.getInn(), humans), illnesses);
+                            illnesses.add(createIllness(finalTime, virusId, humanInDanger.getInn(), move.getInn(), null, "incubation"));
                             System.out.println("\tЗаражён в транспорте: " + humanINN);
                             //addNewIllnessCreation
                         }
                     });
                 }
             });
+            illnesses.forEach(illness -> {
+                //if(finalTime1.minusDays(testVirus.getIncubationPeriod()).isBefore(illness.getDateOfInfection())){
+
+                //}
+            });
             time = time.plusMinutes(30);
             System.out.println(time.toString());
         }
 
+    }
+
+    private Illness createIllness(Time finalTime, Long virusId, long inn, long inn1, Long place, String status) {
+        Illness ans = new Illness();
+        ans.setStatus(status);
+        ans.setDateOfInfection(Timestamp.valueOf(String.valueOf(finalTime)));
+        ans.setVirusId(virusId);
+        ans.setInnInjured(inn);
+        ans.setInnCarrier(inn1);
+        ans.setPlaceTransmission(place);
+        return ans;
+    }
+
+    private Long findVirusId(Humans human, ArrayList<Illness> illnesses) {
+        Long ans = new Long(0);
+        for(Illness check : illnesses){
+            if(check.getInnCarrier() == human.getInn()){
+                return check.getVirusId();
+            }
+        }
+        return ans;
     }
 
     private ArrayList<Long> getDangerBus(Movings move, ArrayList<Movings> moves) {
