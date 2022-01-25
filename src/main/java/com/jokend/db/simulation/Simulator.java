@@ -142,22 +142,24 @@ public class Simulator {
                     });
                 }
             });
-            illnesses.forEach(illness -> {
-                if(illness.getStatus().equals("incubation") && Timestamp.valueOf((finalTime1.minusDays(testVirus.getIncubationPeriod()))).getTime() > (illness.getDateOfInfection()).getTime()){
-                    illness.setStatus("contagious");
-                }
-                if(illness.getStatus().equals("contagious") && Timestamp.valueOf((finalTime1.minusDays(testVirus.getIncubationPeriod() * 3))).getTime() > (illness.getDateOfInfection()).getTime()){
-                    if(Math.random() > 0.1 * testVirus.getMortality()){
-                        getHuman(illness.getInnInjured(), humans).setStatus("ok");
-                        illness.setStatus("healthy");
-                        humansService.setStatus("ok", illness.getInnInjured());
-                    }else{
-                        getHuman(illness.getInnInjured(), humans).setStatus("died");
-                        illness.setStatus("died");
-                        humansService.setStatus("died", illness.getInnInjured());
+            if(time.getMinute() == 0) {
+                illnesses.forEach(illness -> {
+                    if (illness.getStatus().equals("incubation") && Timestamp.valueOf((finalTime1.minusDays(testVirus.getIncubationPeriod()))).getTime() > (illness.getDateOfInfection()).getTime()) {
+                        illness.setStatus("contagious");
                     }
-                }
-            });
+                    if (illness.getStatus().equals("contagious") && Timestamp.valueOf((finalTime1.minusDays(testVirus.getIncubationPeriod() * 3))).getTime() > (illness.getDateOfInfection()).getTime()) {
+                        if (Math.random() > 0.1 * testVirus.getMortality()) {
+                            getHuman(illness.getInnInjured(), humans).setStatus("ok");
+                            illness.setStatus("healthy");
+                            humansService.setStatus("ok", illness.getInnInjured());
+                        } else {
+                            getHuman(illness.getInnInjured(), humans).setStatus("died");
+                            illness.setStatus("died");
+                            humansService.setStatus("died", illness.getInnInjured());
+                        }
+                    }
+                });
+            }
             time = time.plusMinutes(30);
             System.out.println(time.toString());
         }
