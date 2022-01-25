@@ -5,10 +5,7 @@ import com.jokend.db.db.pojoDBClasses.Remedies;
 import com.jokend.db.db.pojoDBClasses.Vaccines;
 import com.jokend.db.db.pojoDBClasses.Virus;
 import com.jokend.db.db.serviceImpls.*;
-import com.jokend.db.pojoAnswers.Curfew;
-import com.jokend.db.pojoAnswers.DistrictStatisticAnswer;
-import com.jokend.db.pojoAnswers.IntegerAnswer;
-import com.jokend.db.pojoAnswers.StatisticAnswer;
+import com.jokend.db.pojoAnswers.*;
 import com.jokend.db.simulation.Simulator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -46,6 +43,10 @@ public class RestController {
     @GetMapping(value = "/getHumanStatistic")
     public StatisticAnswer getHumanStatistic(){
         return new StatisticAnswer(humansService.getVaccinatedHumansCount(), humansService.getRegularPeople(), humansService.getInfectedHumansCount(), humansService.getDiedHuman());
+    }
+    @GetMapping(value = "/getDate")
+    public StringAnswer getDate(){
+        return new StringAnswer(simulator.getTime().toLocalDate().toString());
     }
     @GetMapping(value = "/getMapStatistic")
     public ArrayList<DistrictStatisticAnswer> getMapStatistic(){

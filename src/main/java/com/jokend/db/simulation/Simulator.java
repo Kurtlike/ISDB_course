@@ -50,12 +50,15 @@ public class Simulator {
     private PublicTransportService transportService;
     @Autowired
     private StaffService staffService;
+    @Getter
+    LocalDateTime time = LocalDateTime.of(2021,1,1,8,0);
     //REMOVE
     private Virus testVirus = new Virus();
 
     public void startSimulation(){
         configTestVirus();
-        LocalDateTime time = LocalDateTime.of(2021,1,1,8,0);
+        virusService.addVirus(testVirus);
+        time = LocalDateTime.of(2021,1,1,8,0);
         clearTables();
         ArrayList<Humans> humans = humansService.getHumans();
         ArrayList<PublicTransport> transports = transportService.getTransport();
@@ -149,9 +152,9 @@ public class Simulator {
                         illness.setStatus("healthy");
                         humansService.setStatus("ok", illness.getInnInjured());
                     }else{
-                        getHuman(illness.getInnInjured(), humans).setStatus("dead");
-                        illness.setStatus("dead");
-                        humansService.setStatus("dead", illness.getInnInjured());
+                        getHuman(illness.getInnInjured(), humans).setStatus("died");
+                        illness.setStatus("died");
+                        humansService.setStatus("died", illness.getInnInjured());
                     }
                 }
             });
@@ -262,7 +265,7 @@ public class Simulator {
     private void configTestVirus(){
         testVirus.setVirusId("1");
         testVirus.setAsymptomaticProb(1);
-        testVirus.setIncubationPeriod(10);
+        testVirus.setIncubationPeriod(1);
         testVirus.setInfectiousness(1);
         testVirus.setMortality(1);
     }
